@@ -1,4 +1,4 @@
-# postgres_exporter
+# postgresql_exporter
 Prometheus exporter for PostgreSQL server metrics. Supported PostgreSQL versions: 9.0 and up.
 
 #requirement
