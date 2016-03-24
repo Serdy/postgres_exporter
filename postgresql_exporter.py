@@ -7,17 +7,17 @@ import psycopg2
 import sys
 
 for arg in sys.argv:
-	if 'server_port' in arg:
+	if 'server_port=' in arg:
 		server_port = int(arg[12:])
-	if 'user' in arg :
+	if 'user=' in arg :
 		user = arg[5:]
-	if 'password' in arg:
+	if 'password=' in arg:
 		password = arg[9:]
-	if 'host' in arg:
+	if 'host=' in arg:
 		host = arg[5:]
-	if 'dbname' in arg:
+	if 'dbname=' in arg:
 		dbname = arg[7:]
-	if 'dbname_postgres' in arg:
+	if 'dbname_postgres=' in arg:
 		dbname_postgres = arg[16:]
 	else:
 		dbname_postgres = 'postgres'
@@ -26,10 +26,8 @@ for arg in sys.argv:
 		sys.exit()
 
 
-
 # Try to connect
-def postgres(host, dbname, user, password):
-	conn=psycopg2.connect(host=host, dbname=dbname_postgres, user=user, password=password)
+def postgres(host, dbname, user, password, dbname_postgres):
 	try:
 	    conn=psycopg2.connect(host=host, dbname=dbname_postgres, user=user, password=password)
 	except:
@@ -123,7 +121,7 @@ def postgres(host, dbname, user, password):
 
 
 # postgres(host, dbname, user, password)
-# get_db = postgres(host, dbname, user, password)
+# get_db = postgres(host, dbname, user, password, dbname_postgres)
 # print(get_db)
 
 class CustomCollector(object):
@@ -172,10 +170,10 @@ if __name__ == '__main__':
     # Start up the server to expose the metrics.
     start_http_server(server_port)
     # Generate some requests.
-    get_db = postgres(host, dbname, user, password)
+    get_db = postgres(host, dbname, user, password, dbname_postgres)
     REGISTRY.register(CustomCollector())
     while True:
     	time.sleep(1)
-    	get_db = postgres(host, dbname, user, password)
+    	get_db = postgres(host, dbname, user, password, dbname_postgres)
 
     # while True: time.sleep(1)
