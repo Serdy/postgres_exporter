@@ -7,6 +7,8 @@ import psycopg2
 import sys
 
 for arg in sys.argv:
+	if 'server_port' in arg:
+		server_port = int(arg[12:])
 	if 'user' in arg :
 		user = arg[5:]
 	if 'password' in arg:
@@ -16,17 +18,18 @@ for arg in sys.argv:
 	if 'dbname' in arg:
 		dbname = arg[7:]
 	if 'dbname_postgres' in arg:
-		dbname_postgres = arg[7:]
+		dbname_postgres = arg[16:]
 	else:
 		dbname_postgres = 'postgres'
 	if 'help' in arg:
-		print "python prometheus.py user=postgres_exporter password={{ some_password }} host={{ dns_name_master_postgres or ip_address }} dbname={{ name DB }} dbname_postgres={{ usual it is 'postgres'| default - postgres }}"
+		print "python prometheus.py user=postgres_exporter server_port={{ some_port }} password={{ some_password }} host={{ dns_name_master_postgres or ip_address }} dbname={{ name DB }} dbname_postgres={{ usual it is 'postgres'| default -postgres }}"
 		sys.exit()
 
 
 
 # Try to connect
 def postgres(host, dbname, user, password):
+	conn=psycopg2.connect(host=host, dbname=dbname_postgres, user=user, password=password)
 	try:
 	    conn=psycopg2.connect(host=host, dbname=dbname_postgres, user=user, password=password)
 	except:
@@ -167,7 +170,7 @@ class CustomCollector(object):
 if __name__ == '__main__':
 
     # Start up the server to expose the metrics.
-    start_http_server(9555)
+    start_http_server(server_port)
     # Generate some requests.
     get_db = postgres(host, dbname, user, password)
     REGISTRY.register(CustomCollector())
